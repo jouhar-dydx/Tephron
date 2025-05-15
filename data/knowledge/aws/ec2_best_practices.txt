@@ -1,0 +1,18 @@
+Underutilized EC2 instances are defined as those with:
+- CPU utilization < 10% for 3+ consecutive days
+- Low network/disk I/O
+- High monthly cost despite low usage
+
+Optimization Recommendations:
+- Consider downsizing to smaller instance type
+- Evaluate use of Spot Instances if workload allows
+- Replace with Lambda/Fargate if stateless or short-lived
+
+Underutilized EC2 instances are defined as those that:
+- Have CPU utilization < 10% over 3+ days
+- Are on-demand when Spot could be used
+- Can be replaced with Lambda or Fargate
+
+Recommendation:
+- Consider downsizing or switching to Spot
+- Use Cost Explorer to forecast monthly spend

@@ -1,0 +1,11 @@
+AWS Cost Optimization Guide – Key Insights
+
+EC2 Instance Selection:
+- Use AWS Compute Optimizer to identify underutilized resources
+- For dev/test environments, consider t3a.micro or Graviton-based instances
+- For production workloads, choose m5.large or r5.large based on memory needs
+
+Cost Explorer Usage:
+- Get daily cost data via get_cost_and_usage()
+- Forecast monthly bill using time-series averaging
+- Filter by tags to isolate department/team costs

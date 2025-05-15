@@ -1,0 +1,10 @@
+repos:
+  - repo: https://github.com/pre-commit/mirrors-pylint 
+    rev: v2.17.5
+    hooks:
+      - id: pylint
+
+  - repo: https://github.com/astral-sh/ruff 
+    rev: v0.6.0
+    hooks:
+      - id: ruff

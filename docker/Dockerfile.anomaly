@@ -1,0 +1,3 @@
+FROM tephron-base:latest
+
+CMD ["python", "/app/scripts/detect_and_alert_anomalies.py"]

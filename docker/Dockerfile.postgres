@@ -1,0 +1,7 @@
+FROM postgres:15-alpine
+
+ENV POSTGRES_DB=tephron \
+    POSTGRES_USER=postgres \
+    POSTGRES_PASSWORD=postgres
+
+EXPOSE 5432

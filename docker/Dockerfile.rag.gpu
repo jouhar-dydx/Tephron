@@ -1,0 +1,28 @@
+# docker/Dockerfile.rag.gpu
+
+FROM pytorch/pytorch:2.7.0-cuda11.8-cudnn9-runtime
+
+WORKDIR /app
+
+# Install required packages
+RUN pip install --no-cache-dir \
+    faiss-gpu \
+    sentence-transformers \
+    transformers \
+    accelerate \
+    bitsandbytes \
+    torch \
+    huggingface_hub
+
+# Set up models and knowledge base folders
+RUN mkdir -p /app/data/knowledge/aws /app/models/qwen2_5_coder_3b
+
+# Copy source files
+COPY src/ai/rag/ /app/src/ai/rag/
+COPY scripts/start_rag_server.py /app/scripts/
+
+# Default environment variables (can be overridden via --env-file)
+ENV HUGGINGFACE_TOKEN=invalid_token_placeholder
+ENV RAG_LLM_MODEL=Qwen/Qwen2.5-Coder-3B
+
+CMD ["python", "/app/scripts/start_rag_server.py"]

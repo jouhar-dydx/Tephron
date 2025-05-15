@@ -1,0 +1,16 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Create required directories
+RUN mkdir -p /app/data/knowledge/aws /app/data/embeddings/
+
+# Copy AI source code
+COPY src/ai/rag_engine.py /app/src/ai/rag_engine.py
+
+ENV PYTHONPATH="/app:${PYTHONPATH}"
+
+CMD ["python"]

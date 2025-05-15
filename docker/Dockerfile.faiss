@@ -1,0 +1,9 @@
+FROM tephron-base:latest
+
+RUN pip install --no-cache-dir faiss-cpu sentence-transformers transformers torch accelerate bitsandbytes hf_xet
+
+# Add RAG source code
+COPY src/ai/rag/ /app/src/ai/rag/
+COPY scripts/start_rag_server.py /app/scripts/
+
+CMD ["python", "/app/scripts/start_rag_server.py"]

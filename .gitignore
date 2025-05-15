@@ -1,0 +1,13 @@
+*.pyc
+__pycache__
+/data/output/
+/data/embeddings/*.bin
+.env.*
+*.log
+*.sqlite
+*.bak
+*.swp
+*.DS_Store
+/data/output/ec2/*.json
+.env.*
+*.env

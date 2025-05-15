@@ -1,0 +1,12 @@
+AWS Well-Architected Framework – Cost Optimization Pillar
+
+Key Questions:
+- Are you monitoring idle or underutilized resources?
+- Do you understand your spending patterns?
+- Are you using the right pricing model (On-Demand, Reserved, Spot)?
+- Have you set up alerts for unexpected cost spikes?
+
+Best Practices:
+- Use AWS Budgets to track forecast vs actual spend
+- Apply tags for granular cost allocation
+- Use Cost Explorer to analyze trends
