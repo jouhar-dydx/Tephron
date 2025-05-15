@@ -7,7 +7,7 @@ PyYAML>=6.0
 faiss-cpu>=1.7.0
 sentence-transformers>=2.2.0
 protobuf==3.20.3  # Fixes compatibility with FAISS
-scikit-learn==1.1.3 # behaviour param still supported here
+scikit-learn==1.5.1 # behaviour param still supported here
 pandas>=2.0.0
 numpy==1.23.5
 transformers>=4.39.0
