@@ -1,0 +1,16 @@
+FROM tephron-base:latest
+
+WORKDIR /app
+
+COPY src/core/logger.py /app/src/core/logger.py
+COPY src/core/utils.py /app/src/core/utils.py
+
+COPY src/aws/ec2/scanner.py /app/src/aws/ec2/scanner.py
+COPY src/aws/ec2/analyzer.py /app/src/aws/ec2/analyzer.py
+COPY src/aws/ec2/cost_estimator.py /app/src/aws/ec2/cost_estimator.py
+
+COPY src/aws/cloudwatch/metrics_collector.py /app/src/aws/cloudwatch/metrics_collector.py
+
+COPY scripts/run_cost_analysis.py /app/scripts/run_cost_analysis.py
+
+CMD ["python", "/app/scripts/run_cost_analysis.py"]
