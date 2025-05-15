@@ -2,7 +2,7 @@
 
 import os
 import logging
-from typing import List
+from typing import Dict, Any, List, Optional, Union, Tuple, TypeVar
 
 logger = logging.getLogger(__name__)
 DOCUMENT_DIR = "/app/data/knowledge/aws/"

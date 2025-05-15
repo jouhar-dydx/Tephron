@@ -2,6 +2,7 @@
 
 import logging
 import os
+import boto3
 from src.core.db_handler import PostgresHandler
 from src.aws.ec2.scanner import EC2Scanner
 from src.aws.ec2.cost_estimator import EC2CostEstimator

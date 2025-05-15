@@ -1,62 +1,61 @@
 # src/aws/ec2/scanner.py
 
-import os
-import json
 import boto3
-import logging
 from concurrent.futures import ThreadPoolExecutor
-from src.core.utils import save_json
-from src.aws.ec2.cost_estimator import EC2CostEstimator
+from datetime import datetime
+import logging
+from decimal import Decimal
+from typing import Dict, List, Any, Optional, Union, Tuple, TypeVar
 
 logger = logging.getLogger(__name__)
-OUTPUT_DIR = "/app/data/output/ec2/"
+
+def get_all_regions(session=None):
+    """Get list of active AWS regions using Boto3"""
+    session = session or boto3.Session()
+    ec2 = session.client("ec2", region_name="us-east-1")
+    try:
+        response = ec2.describe_regions()
+        return [r["RegionName"] for r in response["Regions"]]
+    except Exception as e:
+        logger.error(f"[!] Failed to fetch region list: {e}")
+        return ["us-east-1"]
 
 class EC2Scanner:
-    def __init__(self, region: str):
+    def __init__(self, region="us-east-1"):
         self.region = region
-        self.session = boto3.Session(region_name=region)
-        self.ec2_client = self.session.client('ec2')
-        self.cost_estimator = EC2CostEstimator(self.session)
+        self.session = boto3.Session()
+        self.ec2_client = self.session.client("ec2", region_name=region)
 
-    def scan_instances(self) -> List[Dict]:
+    def scan_instances(self) -> List[Dict[str, Any]]:
+        """Scan all running EC2 instances in current region"""
         try:
-            response = self.ec2_client.describe_instances()
+            logger.info(f"[+] Scanning EC2 instances in {self.region}")
+            response = self.ec2_client.describe_instances(Filters=[{"Name": "instance-state-name", "Values": ["running"]}])
+            reservations = response.get("Reservations", [])
             instances = []
 
-            for reservation in response.get("Reservations", []):
-                for instance in reservation.get("Instances", []):
-                    instance_info = {
-                        "InstanceId": instance.get("InstanceId"),
-                        "InstanceType": instance.get("InstanceType"),
-                        "State": instance.get("State", {}).get("Name"),
-                        "LaunchTime": str(instance.get("LaunchTime")),
-                        "PublicIpAddress": instance.get("PublicIpAddress"),
-                        "Tags": {tag["Key"]: tag["Value"] for tag in instance.get("Tags", [])},
-                        "Region": self.region
+            for reservation in reservations:
+                for instance in reservation["Instances"]:
+                    inst_data = {
+                        "InstanceId": instance["InstanceId"],
+                        "InstanceType": instance["InstanceType"],
+                        "State": instance["State"]["Name"],
+                        "LaunchTime": str(instance["LaunchTime"]),
+                        "Region": self.region,
+                        "Tags": {t["Key"]: t["Value"] for t in instance.get("Tags", [])}
                     }
+                    instances.append(inst_data)
 
-                    instances.append(instance_info)
+            logger.info(f"[+] Found {len(instances)} instance(s) in {self.region}")
 
-            filename = f"{OUTPUT_DIR}instances_{self.region}_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}.json"
+            # Save raw scan data
+            filename = f"/app/data/output/ec2/instances_{self.region}_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}.json"
+            from src.core.utils import save_json
             save_json(instances, filename)
-            logger.info(f"[+] Scanned {len(instances)} EC2 instances in {self.region}")
+
             return instances
         except Exception as e:
-            logger.error(f"[!] Failed to scan instances in {self.region}: {e}")
+            logger.error(f"[!] Scan failed in {self.region}: {e}")
             return []
-
-    def run_parallel_scan(self, max_workers: int = 10) -> List[Dict]:
-        from src.aws.ec2.scanner import get_all_regions
-        regions = get_all_regions(self.session)
-        logger.info(f"[+] Found active regions: {regions}")
-
-        all_instances = []
-        with ThreadPoolExecutor(max_workers=max_workers) as executor:
-            futures = [executor.submit(self.scan_instances, region) for region in regions]
-            for future in futures:
-                all_instances.extend(future.result())
-
-        logger.info(f"[+] Enriching {len(all_instances)} instances with cost data")
-        cost_enriched = self.cost_estimator.estimate_and_enhance_instances(all_instances)
-
-        return cost_enriched
+        
+__all__ = ['EC2Scanner', 'get_all_regions']

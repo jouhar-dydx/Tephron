@@ -3,9 +3,9 @@
 import os
 import json
 import logging
-from typing import List, Dict, Any
+from typing import Dict, Any, List, Optional, Union, Tuple, TypeVar
 from src.core.db_handler import PostgresHandler
-from src.core.utils import load_json_files
+from src.core.utils.file_utils import load_json_files
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

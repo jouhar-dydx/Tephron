@@ -4,7 +4,7 @@ import os
 import json
 import logging
 from datetime import datetime, timedelta
-from typing import List, Dict, Any
+from typing import Dict, Any, List, Optional, Union, Tuple, TypeVar
 
 logger = logging.getLogger(__name__)
 DATA_DIR = "/app/data/output/ec2/"
